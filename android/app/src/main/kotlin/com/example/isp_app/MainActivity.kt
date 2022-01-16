@@ -1,4 +1,4 @@
-package com.example.isp_app
+package com.fsd.isp_app
 
 import io.flutter.embedding.android.FlutterActivity
 

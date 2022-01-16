@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isp_app/src/configs/appColors.dart';
+import 'package:isp_app/src/controllers/baseController.dart';
 import 'package:isp_app/src/widgets/kText.dart';
 
-class NewCollectionTab extends StatelessWidget {
+class NewCollectionTab extends StatelessWidget with BaseController {
   @override
   Widget build(BuildContext context) {
     return Padding(

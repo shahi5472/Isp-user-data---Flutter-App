@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.isp_app">
+    package="com.fsd.isp_app">
    <application
         android:label="isp_app"
         android:icon="@mipmap/ic_launcher">
@@ -30,6 +30,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+               
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
@@ -39,5 +40,6 @@
             android:value="2" />
     </application>
   <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 </manifest>

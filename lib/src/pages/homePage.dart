@@ -1,15 +1,22 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isp_app/src/configs/appColors.dart';
 
-import 'package:isp_app/src/pages/loginPage.dart';
-import 'package:isp_app/src/tabBarPage/newCollection.dart';
+import 'package:isp_app/src/controllers/loginController.dart';
+import 'package:isp_app/src/controllers/userDataController.dart';
+
+import 'package:isp_app/src/tabBarPage/newConnection.dart';
 import 'package:isp_app/src/tabBarPage/sendMessage.dart';
 import 'package:isp_app/src/tabBarPage/supportTab.dart';
 import 'package:isp_app/src/tabBarPage/userDataTab.dart';
 import 'package:isp_app/src/widgets/kText.dart';
 
 class HomePage extends StatefulWidget {
+  final String? currentUserName;
+
+  HomePage({this.currentUserName});
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -34,8 +41,13 @@ class _HomePageState extends State<HomePage>
 
   //
 
+  final _ = Get.put(LoginController());
+  final userC = Get.put(UserDataController());
+
   @override
   Widget build(BuildContext context) {
+    // userC.getuserData();
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(104),
@@ -43,15 +55,20 @@ class _HomePageState extends State<HomePage>
           children: [
             AppBar(
               automaticallyImplyLeading: false,
-              title: KText(
-                text: 'MOSHIUR SAZZAD SOHAN',
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-                color: black,
+              title: Container(
+                width: 100,
+                child: KText(
+                  text: '${widget.currentUserName}',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: black,
+                ),
               ),
               actions: [
                 IconButton(
-                  onPressed: () => Get.to(LoginPage()),
+                  onPressed: () {
+                    _.userSignOut(accessToken: 'accessToken');
+                  },
                   icon: CircleAvatar(
                     backgroundColor: black12,
                     child: Icon(
@@ -70,10 +87,16 @@ class _HomePageState extends State<HomePage>
                 child: TabBar(
                   indicatorColor: Colors.orange,
                   unselectedLabelColor: black,
+                  unselectedLabelStyle: TextStyle(
+                    fontWeight: FontWeight.normal,
+                  ),
                   labelColor: Colors.orange,
+                  labelStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                   indicatorSize: TabBarIndicatorSize.tab,
                   tabs: [
-                    Tab(text: 'New Collection'),
+                    Tab(text: 'New Connection'),
                     Tab(text: 'Support'),
                     Tab(text: 'User Data'),
                     Tab(text: 'Send Message'),

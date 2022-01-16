@@ -1,38 +1,38 @@
+
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserDataController extends GetxController {
+  // final _ = Get.put(LoginController());
   final _dio = Dio();
   final customerDataList = RxMap();
-  final isLoading = RxBool(false);
 
-  getuserData({String? query, String? id}) async {
+  getuserData({String? id}) async {
     try {
-      if (isLoading.value = true) {
-        final res = await _dio.get(
-            'https://care.novusnk.net/api/web/v1/api/customer?idNumber=$id');
+      final sharedPreferences = await SharedPreferences.getInstance();
+      final value = sharedPreferences.get('accessToken');
 
-        if (res.statusCode == 200) {
-          print(res.data['data']['customer_info']);
+      final token = sharedPreferences.get('accessToken');
+     
 
-          var results =
-              customerDataList.value = res.data['data']['customer_info'];
+      final res = await _dio.get(
+        'http://support.nbox.live:82/data/care_api/v1/$id',
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": 'Bearer $token'
+          },
+        ),
+      );
+      print('-----------------------');
+      print(value);
+      print('-----------------------');
 
-          isLoading.value = false;
+      if (res.statusCode == 200) {
+        print(res.data['data']['customer_info']);
 
-          print('-----------------------------');
-          print(results);
-          print('-----------------------------');
-
-          if (query != null) {
-            results = results
-                .where((element) => element['idNumber']
-                    .toLowerCase()
-                    .contains((query.toLowerCase())))
-                .toList();
-          }
-        }
-        isLoading.value = false;
+        customerDataList.value = res.data['data']['customer_info'];
       }
     } catch (e) {
       print(e);

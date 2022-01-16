@@ -1,10 +1,12 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:get/get.dart';
-
 import 'package:isp_app/src/configs/appColors.dart';
 import 'package:isp_app/src/controllers/baseController.dart';
+import 'package:isp_app/src/widgets/googleMap.dart';
 import 'package:isp_app/src/widgets/kText.dart';
+import 'package:isp_app/src/widgets/webViewMap.dart';
 
 class UserDataTab extends StatefulWidget {
   @override
@@ -17,9 +19,7 @@ class _UserDataTabState extends State<UserDataTab> with BaseController {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20),
-      child: ListView(
-        shrinkWrap: true,
-        primary: false,
+      child: Column(
         children: [
           SizedBox(height: 20),
           Container(
@@ -27,30 +27,21 @@ class _UserDataTabState extends State<UserDataTab> with BaseController {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: black12,
+                  color: Colors.grey.shade200,
                   spreadRadius: 5,
-                  blurRadius: 20,
+                  blurRadius: 10,
                   offset: Offset(0, 3),
                 ),
               ],
             ),
             child: TextFormField(
-              onSaved: (val) {
+              onChanged: (val) {
                 setState(() {
-                  val = _controller.text;
-
-                  userDataC.getuserData(id: _controller.text);
-                });
-              },
-              onFieldSubmitted: (val) {
-                setState(() {
-                  val = _controller.text;
 
                   userDataC.getuserData(id: _controller.text);
                 });
               },
               controller: _controller,
-              onChanged: onSearchTextChanged,
               decoration: InputDecoration(
                 enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: black12, width: .0),
@@ -72,132 +63,128 @@ class _UserDataTabState extends State<UserDataTab> with BaseController {
           SizedBox(height: 20),
           Divider(),
           SizedBox(height: 20),
-          _controller.text.length == 5
+          _controller.text.isNotEmpty
               ? customUserData()
               : Center(
                   child: KText(text: 'No User'),
-                )
+                ),
         ],
       ),
     );
   }
 
   Widget customUserData() {
-    return userDataC.isLoading.value == true
-        ? ListView.builder(
-            shrinkWrap: true,
-            primary: false,
-            // itemCount: userDataC.customerDataList.length,
-            itemCount: 1,
-            itemBuilder: (context, index) {
-              final users = userDataC.customerDataList;
+    return ListView.builder(
+        shrinkWrap: true,
+        primary: false,
+        // itemCount: userDataC.customerDataList.length,
+        itemCount: 1,
+        itemBuilder: (context, index) {
+          final users = userDataC.customerDataList;
 
-              return userDataC.customerDataList.isEmpty
-                  ? Obx(
-                      () => Card(
-                        elevation: 5,
-                        child: Container(
-                          // decoration: BoxDecoration(
-                          //     border: Border.all(color: orange),
-                          //     borderRadius: BorderRadius.circular(20)),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CircleAvatar(
-                                  radius: 30,
-                                  backgroundColor: black12,
-                                  backgroundImage: AssetImage(
-                                    'assets/img/profile_avatar.jpg',
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                customUserInfo(
-                                  icon: EvaIcons.checkmarkCircle2,
-                                  title: 'user id :',
-                                  text: users['idNumber'],
-                                  textColor: orange,
-                                ),
-                                SizedBox(height: 10),
-                                customUserInfo(
-                                  icon: EvaIcons.person,
-                                  title: 'user name :',
-                                  text: users['first_name'],
-                                  textColor: black,
-                                ),
-                                SizedBox(height: 10),
-                                customUserInfo(
-                                  icon: EvaIcons.pin,
-                                  title: 'address :',
-                                  text: users['address'],
-                                  textColor: black,
-                                ),
-                                SizedBox(height: 10),
-                                customUserInfo(
-                                  icon: EvaIcons.phoneCall,
-                                  title: 'mobile number :',
-                                  text: users['mobileNumber'],
-                                  textColor: black,
-                                ),
-                                SizedBox(height: 10),
-                                customUserInfo(
-                                  icon: EvaIcons.phoneCall,
-                                  title: 'alernative mobile number :',
-                                  text: users['alernative_mobile_number'],
-                                  textColor: black,
-                                ),
-                                SizedBox(height: 10),
-                                customUserInfo(
-                                  icon: EvaIcons.personDone,
-                                  title: 'username :',
-                                  text: users['username'],
-                                  textColor: black,
-                                ),
-                                SizedBox(height: 10),
-                                customUserInfo(
-                                  icon: EvaIcons.lock,
-                                  title: 'password :',
-                                  text: users['password'],
-                                  textColor: black,
-                                ),
-                                SizedBox(height: 10),
-                                customUserInfo(
-                                  icon: EvaIcons.radio,
-                                  title: 'fiber code :',
-                                  text: users['fiber_code'],
-                                  textColor: black,
-                                ),
-                                SizedBox(height: 10),
-                                customUserInfo(
-                                  icon: EvaIcons.hardDrive,
-                                  title: 'fiber length :',
-                                  text: users['fiber_length'],
-                                  textColor: black,
-                                ),
-                                SizedBox(height: 10),
-                                customUserInfo(
-                                  icon: EvaIcons.hardDrive,
-                                  title: 'fiber brand :',
-                                  text: users['fiber_brand'],
-                                  textColor: black,
-                                ),
-                              ],
+          return Obx(() => userDataC.customerDataList.length == 0
+              ? Center(
+                  child: KText(text: 'No User Found'),
+                )
+              : Card(
+                  elevation: 5,
+                  child: Container(
+                    // decoration: BoxDecoration(
+                    //     border: Border.all(color: orange),
+                    //     borderRadius: BorderRadius.circular(20)),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            radius: 30,
+                            backgroundColor: black12,
+                            backgroundImage: AssetImage(
+                              'assets/img/profile_avatar.jpg',
                             ),
                           ),
-                        ),
+                          SizedBox(height: 20),
+                          customUserInfo(
+                            icon: EvaIcons.checkmarkCircle2,
+                            title: 'User id :',
+                            text: users['idNumber'],
+                            textColor: orange,
+                          ),
+                          customUserInfo(
+                            icon: EvaIcons.person,
+                            title: 'User name :',
+                            text: users['first_name'],
+                            textColor: black,
+                          ),
+                          customUserInfo(
+                            icon: EvaIcons.home,
+                            title: 'Address :',
+                            text: users['address'],
+                            textColor: black,
+                          ),
+                          customUserInfo(
+                            icon: EvaIcons.phoneCall,
+                            title: 'Mobile number :',
+                            text: users['mobileNumber'],
+                            textColor: black,
+                          ),
+                          customUserInfo(
+                            icon: EvaIcons.phoneCall,
+                            title: 'Alernative mobile number :',
+                            text: users['alernative_mobile_number'],
+                            textColor: black,
+                          ),
+                          customUserInfo(
+                            icon: EvaIcons.personDone,
+                            title: 'Username :',
+                            text: users['username'],
+                            textColor: black,
+                          ),
+                          customUserInfo(
+                            icon: EvaIcons.lock,
+                            title: 'Password :',
+                            text: users['password'],
+                            textColor: black,
+                          ),
+                          customUserInfo(
+                            icon: EvaIcons.radio,
+                            title: 'Fiber code :',
+                            text: users['fiber_code'],
+                            textColor: black,
+                          ),
+                          customUserInfo(
+                            icon: EvaIcons.hardDrive,
+                            title: 'Fiber length :',
+                            text: users['fiber_length'],
+                            textColor: black,
+                          ),
+                          customUserInfo(
+                            icon: EvaIcons.hardDrive,
+                            title: 'Fiber brand :',
+                            text: users['fiber_brand'],
+                            textColor: black,
+                          ),
+                          customUserInfo(
+                            icon: EvaIcons.pin,
+                            title: 'Map location :',
+                            text: users['map_location'],
+                            textColor: black,
+                          ),
+                          SizedBox(height: 20),
+                          actionButton(
+                            alternativeNumber:
+                                users['alernative_mobile_number'],
+                            callByNumber: users['mobileNumber'],
+                            mapLocation: users['map_location'],
+                          ),
+                        ],
                       ),
-                    )
-                  : Center(
-                      child: KText(text: 'No User Found'),
-                    );
-            })
-        : Center(
-            child: CircularProgressIndicator(
-              color: orange,
-            ),
-          );
+                    ),
+                  ),
+                ));
+        });
   }
 
   Widget customUserInfo({
@@ -206,30 +193,35 @@ class _UserDataTabState extends State<UserDataTab> with BaseController {
     required String text,
     required Color textColor,
   }) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
       children: [
-        Icon(
-          icon,
-          size: 20,
-          color: black12,
-        ),
-        SizedBox(width: 5),
-        KText(
-          text: title,
-          fontSize: 12,
-          color: Colors.black54,
-        ),
-        SizedBox(width: 10),
-        Expanded(
-          child: KText(
-            text: text,
-            fontSize: 15,
-            maxLines: 2,
-            color: textColor,
-            wordSpacing: 2,
-            fontWeight: FontWeight.bold,
-          ),
+        SizedBox(height: 10),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              icon,
+              size: 20,
+              color: black12,
+            ),
+            SizedBox(width: 5),
+            KText(
+              text: title,
+              fontSize: 12,
+              color: Colors.black54,
+            ),
+            SizedBox(width: 10),
+            Expanded(
+              child: KText(
+                text: text,
+                fontSize: 15,
+                maxLines: 2,
+                color: textColor,
+                wordSpacing: 2,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -237,17 +229,92 @@ class _UserDataTabState extends State<UserDataTab> with BaseController {
 
   //
 
-  onSearchTextChanged(String text) async {
-    userDataC.customerDataList.clear();
-    if (text.isEmpty) {
-      setState(() {});
-      return;
-    }
-    userDataC.customerDataList.forEach((userDetails, data) {
-      if (userDetails['idNumber'].contains(text)) {
-        userDataC.customerDataList.addAll(userDetails);
-      }
-    });
-    setState(() {});
+  actionButton({
+    required String callByNumber,
+    required String alternativeNumber,
+    required String mapLocation,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        customButton(
+          onTapValue: () async {
+            await FlutterPhoneDirectCaller.callNumber(
+              callByNumber,
+            );
+          },
+          buttonTitle: 'Number',
+          buttonColor: Colors.green,
+          iconColor: white,
+          icon: Icons.call,
+        ),
+        customButton(
+          onTapValue: () async {
+            await FlutterPhoneDirectCaller.callNumber(
+              alternativeNumber,
+            );
+          },
+          buttonTitle: 'Alternative No',
+          buttonColor: black12,
+          iconColor: Colors.green,
+          icon: Icons.call,
+        ),
+        customButton(
+          onTapValue: () {
+            GMapDefaultOpen.openMap(latitudeAndLongitude: mapLocation);
+          },
+          buttonTitle: 'Map',
+          buttonColor: Colors.green,
+          iconColor: white,
+          icon: Icons.location_on,
+        ),
+        customButton(
+          onTapValue: () => Get.to(
+            WebViewMap(
+              latitudeAndLongitude: mapLocation,
+            ),
+          ),
+          buttonTitle: 'WebView Map',
+          buttonColor: black12,
+          iconColor: Colors.green,
+          icon: Icons.location_on,
+        ),
+      ],
+    );
+  }
+
+  customButton({
+    required void Function()? onTapValue,
+    required String buttonTitle,
+    required Color buttonColor,
+    required Color iconColor,
+    required IconData icon,
+  }) {
+    return InkWell(
+      onTap: onTapValue,
+      child: Column(
+        children: [
+          Container(
+            height: 50,
+            width: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: buttonColor,
+            ),
+            child: Icon(
+              icon,
+              size: 30,
+              color: iconColor,
+            ),
+          ),
+          SizedBox(height: 5),
+          KText(
+            text: buttonTitle,
+            fontSize: 12,
+          ),
+        ],
+      ),
+    );
   }
 }

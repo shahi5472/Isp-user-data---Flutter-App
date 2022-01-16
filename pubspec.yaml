@@ -16,7 +16,12 @@ dependencies:
   dio:
   eva_icons_flutter:  
   json_annotation:
+  url_launcher:
+  flutter_phone_direct_caller: ^2.1.0
   google_fonts: ^2.2.0 #google fonts for reduce app size
+  webview_flutter: ^3.0.0
+  shared_preferences:  
+  shared_value:
 
 
 dev_dependencies:
