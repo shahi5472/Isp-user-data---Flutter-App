@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,26 +7,36 @@ class UserDataController extends GetxController {
   final _dio = Dio();
   final customerDataList = RxMap();
 
-  getuserData({String? id}) async {
+  getuserData({required String id}) async {
+    print('++++++++++++++++++++++++++++++++++');
     try {
       final sharedPreferences = await SharedPreferences.getInstance();
-      final value = sharedPreferences.get('accessToken');
-
       final token = sharedPreferences.get('accessToken');
-     
+
+      print(token);
 
       final res = await _dio.get(
         'http://support.nbox.live:82/data/care_api/v1/$id',
         options: Options(
           headers: {
             "Content-Type": "application/json",
-            "Authorization": 'Bearer $token'
+            "Accept": "application/json",
+            "Authorization": ' $token'
           },
         ),
       );
-      print('-----------------------');
-      print(value);
-      print('-----------------------');
+
+      print(res.statusCode);
+      print(res.headers);
+      // print(res.body);
+      // print(res.unauthorized);
+      print(res.realUri);
+      print(res.statusMessage);
+      print(res.data);
+      print(res.realUri);
+      print(res.requestOptions);
+
+      print('++++++++++++++++++++++++++++++++++');
 
       if (res.statusCode == 200) {
         print(res.data['data']['customer_info']);

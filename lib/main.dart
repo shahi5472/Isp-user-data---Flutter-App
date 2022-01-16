@@ -12,6 +12,5 @@ void main() {
   //     systemNavigationBarColor: black12,
   //   ),
   // );
-  runApp( App());
+  runApp(App());
 }
- 

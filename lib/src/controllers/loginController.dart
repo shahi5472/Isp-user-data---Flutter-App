@@ -18,21 +18,17 @@ class LoginController extends GetxController {
   getLoginUser() async {
     try {
       final sharedPreferences = await SharedPreferences.getInstance();
-      final value = sharedPreferences.get('accessToken');
+      final res = await _dio.post('http://support.nbox.live:82/login/', data: {
+        'username': username.value,
+        'password': password.value,
+      });
 
-      final res = await _dio.post(
-        'http://support.nbox.live:82/login/',
-        data: {
-          'username': username.value,
-          'password': password.value,
-        },
-        options: Options(
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": 'Bearer $value'
-          },
-        ),
-      );
+      print('++++++++++++++++++++++++++++++++++++++++++++++++');
+      print(res.statusCode);
+      print(res.statusMessage);
+      print(res.data);
+      print(res.data['token']);
+      print('++++++++++++++++++++++++++++++++++++++++++++++++');
 
       if (res.statusCode == 200) {
         Get.snackbar(
@@ -40,7 +36,14 @@ class LoginController extends GetxController {
           'Login Success',
         );
 
-        currentUserToken(accessToken: res.data['token']);
+        sharedPreferences.setString(
+          'accessToken',
+          res.data['token'],
+        );
+
+        //currentUserToken(accessToken: res.data['token']);
+
+        print('Read Access Token => ${sharedPreferences.get('accessToken')}');
 
         await Get.offAll(HomePage());
       }
@@ -57,11 +60,11 @@ class LoginController extends GetxController {
     }
   }
 
-  Future<String?> currentUserToken({
+  Future<void> currentUserToken({
     required String accessToken,
   }) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.setString(
+    sharedPreferences.setString(
       'accessToken',
       accessToken,
     );
